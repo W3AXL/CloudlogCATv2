@@ -162,11 +162,8 @@
         ' we want OmniRig interface V2.1
         If OmniRigEngine.InterfaceVersion < &H101 Then GoTo Error1
 
-        ' Populate the radio dropdown and select the first rig
-        fldRigSelection.Items.Add("1: " + OmniRigEngine.Rig1.RigType)
-        fldRigSelection.Items.Add("2: " + OmniRigEngine.Rig2.RigType)
-        fldRigSelection.Items.Add("3: " + OmniRigEngine.Rig3.RigType)
-        fldRigSelection.Items.Add("4: " + OmniRigEngine.Rig4.RigType)
+        GetRigNames()
+
         fldRigSelection.SelectedIndex = 0
 
         ' Select rig 1
@@ -178,6 +175,16 @@ Error1:
         OmniRigEngine = Nothing
         MsgBox("OmniRig Is Not installed Or has a wrong version number")
 
+    End Sub
+
+    Private Sub GetRigNames()
+        ' Clear dropdown
+        fldRigSelection.Items.Clear()
+        ' Populate the radio dropdown and select the first rig
+        fldRigSelection.Items.Add("1: " + OmniRigEngine.Rig1.RigType)
+        fldRigSelection.Items.Add("2: " + OmniRigEngine.Rig2.RigType)
+        fldRigSelection.Items.Add("3: " + OmniRigEngine.Rig3.RigType)
+        fldRigSelection.Items.Add("4: " + OmniRigEngine.Rig4.RigType)
     End Sub
 
     Private Sub StopOmniRig()
@@ -235,5 +242,9 @@ Error1:
 
     Private Sub fldRigSelection_SelectedIndexChanged(sender As Object, e As EventArgs) Handles fldRigSelection.SelectedIndexChanged
         SelectRig(fldRigSelection.SelectedIndex + 1)
+    End Sub
+
+    Private Sub fldRigSelection_DropDown(sender As Object, e As EventArgs) Handles fldRigSelection.DropDown
+        GetRigNames()
     End Sub
 End Class
