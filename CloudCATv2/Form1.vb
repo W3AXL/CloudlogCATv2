@@ -52,9 +52,7 @@
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
         ' Set Status Bar Information
-        ToolStripStatusLabel1.Text = "Cloudlog Not Connected"
-
-        RadioButton1.Checked = True
+        lblCloudlogStatus.Text = "Cloudlog Not Connected"
 
         If (My.Settings.TransverterEnabled = True) Then
             TransverterOffsetToolStripMenuItem.Checked = True
@@ -82,7 +80,7 @@
     'Thread-Safe Calls To Windows Forms Controls
     Private Sub ShowRigStatus()
         If Rig Is Nothing Then Exit Sub
-        Label8.Text = Rig.StatusStr
+        lblRigStatus.Text = Rig.StatusStr
     End Sub
 
     'Thread-Safe Calls To Windows Forms Controls
@@ -100,32 +98,31 @@
                 newfreq = Rig.Freq - My.Settings.TransverterFreq
             End If
 
-            Label3.Text = newfreq
+            lblRigFreq.Text = newfreq
         Else
             newfreq = Rig.Freq
-            Label3.Text = Rig.Freq 'Rig.GetRxFrequency
+            lblRigFreq.Text = Rig.Freq 'Rig.GetRxFrequency
         End If
 
->>>>>>> e221a03032e5c6a6f33ade8747dc3b7de93a3a4e
         Select Case Rig.Mode
             Case PM_CW_L
-                Label6.Text = "CW"
+                lblRigMode.Text = "CW"
             Case PM_CW_U
-                Label6.Text = "CW"
+                lblRigMode.Text = "CW"
             Case PM_SSB_L
-                Label6.Text = "SSB"
+                lblRigMode.Text = "SSB"
             Case PM_SSB_U
-                Label6.Text = "SSB"
+                lblRigMode.Text = "SSB"
             Case PM_DIG_U
-                Label6.Text = "DIGI"
+                lblRigMode.Text = "DIGI"
             Case PM_DIG_L
-                Label6.Text = "DIGI"
+                lblRigMode.Text = "DIGI"
             Case PM_AM
-                Label6.Text = "AM"
+                lblRigMode.Text = "AM"
             Case PM_FM
-                Label6.Text = "FM"
+                lblRigMode.Text = "FM"
             Case Else
-                Label6.Text = "Other"
+                lblRigMode.Text = "Other"
         End Select
 
         'Connect to Cloudlog API and sync frequency
@@ -134,41 +131,47 @@
                 Using client As New Net.WebClient
                     System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12
 
-                    Dim RadioName As String = ""
+                    Dim RadioName As String = Rig.RigType
 
-                    If RadioButton1.Checked Then
-                        RadioName = "OmniRig 1"
-                    Else
-                        RadioName = "OmniRig 2"
-                    End If
-                                
-                    Dim timestamp as String = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")
+                    Dim timestamp As String = DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")
 
-                    Dim myString As String = "{""radio"": """ + RadioName + """, ""frequency"": """ + newfreq.ToString + """, ""mode"": """ + Label6.Text + """, ""timestamp"": """ + timestamp + """, ""key"": """ + My.Settings.CloudlogAPIKey + """}"
+                    Dim myString As String = "{""radio"": """ + RadioName + """, ""frequency"": """ + newfreq.ToString + """, ""mode"": """ + lblRigMode.Text + """, ""timestamp"": """ + timestamp + """, ""key"": """ + My.Settings.CloudlogAPIKey + """}"
 
                     Try
                         Dim responsebytes = client.UploadString(My.Settings.CloudlogURL + "/index.php/api/radio", myString)
-                        ToolStripStatusLabel1.Text = "Cloudlog Synced: " + timestamp
+                        lblCloudlogStatus.Text = "Cloudlog Synced: " + timestamp
                     Catch ex As Exception
-                        ToolStripStatusLabel1.Text = "Cloudlog Synced: Failed, check URL/API"
+                        lblCloudlogStatus.Text = "Cloudlog Synced: Failed, check URL/API"
                     End Try
                 End Using
             Catch ex As System.Net.WebException
-                ToolStripStatusLabel1.Text = "Cloudlog Synced: Failed"
+                lblCloudlogStatus.Text = "Cloudlog Synced: Failed"
             End Try
         End If
     End Sub
 
     'Procedures
     Private Sub StartOmniRig()
-        ' On Error GoTo Error1
+
+        ' Make sure omnirig is loaded
         If Not OmniRigEngine Is Nothing Then Exit Sub
         OmniRigEngine = CreateObject("OmniRig.OmniRigX")
-        ' we want OmniRig interface V.1.1 to 1.99
-        ' as V2.0 will likely be incompatible  with 1.x
+
+        Debug.Print("OmniRig version: " + OmniRigEngine.InterfaceVersion.ToString())
+
+        ' we want OmniRig interface V2.1
         If OmniRigEngine.InterfaceVersion < &H101 Then GoTo Error1
-        If OmniRigEngine.InterfaceVersion > &H299 Then GoTo Error1
+
+        ' Populate the radio dropdown and select the first rig
+        fldRigSelection.Items.Add("1: " + OmniRigEngine.Rig1.RigType)
+        fldRigSelection.Items.Add("2: " + OmniRigEngine.Rig2.RigType)
+        fldRigSelection.Items.Add("3: " + OmniRigEngine.Rig3.RigType)
+        fldRigSelection.Items.Add("4: " + OmniRigEngine.Rig4.RigType)
+        fldRigSelection.SelectedIndex = 0
+
+        ' Select rig 1
         SelectRig(1)
+
         Exit Sub
 Error1:
         ' report problems
@@ -195,11 +198,11 @@ Error1:
         ShowRigParams()
     End Sub
 
-    Private Sub RadioButton1_Click(sender As Object, e As EventArgs) Handles RadioButton1.Click
+    Private Sub RadioButton1_Click(sender As Object, e As EventArgs)
         SelectRig(1)
     End Sub
 
-    Private Sub RadioButton2_Click(sender As Object, e As EventArgs) Handles RadioButton2.Click
+    Private Sub RadioButton2_Click(sender As Object, e As EventArgs)
         SelectRig(2)
     End Sub
 
@@ -228,5 +231,9 @@ Error1:
 
     Private Sub TransverterOffsetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TransverterOffsetToolStripMenuItem.Click
         Form3.Show()
+    End Sub
+
+    Private Sub fldRigSelection_SelectedIndexChanged(sender As Object, e As EventArgs) Handles fldRigSelection.SelectedIndexChanged
+        SelectRig(fldRigSelection.SelectedIndex + 1)
     End Sub
 End Class
