@@ -4,6 +4,9 @@
     Dim Rig As OmniRig.RigX
     Dim OurRigNo As Integer
 
+    ' Cloudlog sync status
+    Dim SyncStatus As String
+
     'Thread-Safe Calls To Windows Forms Controls
     Delegate Sub ShowRigStatusDelegate()
     Delegate Sub ShowRigParamsDelegate()
@@ -57,6 +60,9 @@
         If (My.Settings.TransverterEnabled = True) Then
             TransverterOffsetToolStripMenuItem.Checked = True
         End If
+
+        ' Get settings
+        MinimizeToTrayToolStripMenuItem.Checked = My.Settings.MinimizeToTray
 
         StartOmniRig()
     End Sub
@@ -139,15 +145,19 @@
 
                     Try
                         Dim responsebytes = client.UploadString(My.Settings.CloudlogURL + "/index.php/api/radio", myString)
-                        lblCloudlogStatus.Text = "Cloudlog Synced: " + timestamp
+                        SyncStatus = "Synced: " + timestamp
                     Catch ex As Exception
-                        lblCloudlogStatus.Text = "Cloudlog Synced: Failed, check URL/API"
+                        SyncStatus = "Sync Failed, check API"
                     End Try
                 End Using
             Catch ex As System.Net.WebException
-                lblCloudlogStatus.Text = "Cloudlog Synced: Failed"
+                SyncStatus = "Sync Error"
             End Try
+            lblCloudlogStatus.Text = SyncStatus
         End If
+
+        ' Update tray text
+        UpdateTrayText()
     End Sub
 
     'Procedures
@@ -190,6 +200,10 @@ Error1:
     Private Sub StopOmniRig()
         Rig = Nothing
         OmniRigEngine = Nothing
+    End Sub
+
+    Private Sub UpdateTrayText()
+        trayIcon.Text = SyncStatus + vbNewLine + "Rig: " + Rig.RigType + vbNewLine + "Freq: " + Rig.Freq.ToString()
     End Sub
 
     Private Sub SelectRig(NewRigNo As Integer)
@@ -246,5 +260,33 @@ Error1:
 
     Private Sub fldRigSelection_DropDown(sender As Object, e As EventArgs) Handles fldRigSelection.DropDown
         GetRigNames()
+    End Sub
+
+    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
+        If Me.WindowState = FormWindowState.Minimized And MinimizeToTrayToolStripMenuItem.Checked Then
+            trayIcon.Visible = True
+            Me.Hide()
+        End If
+    End Sub
+
+    Private Sub trayIcon_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles trayIcon.MouseDoubleClick
+        Me.Show()
+        Me.WindowState = FormWindowState.Normal
+        trayIcon.Visible = False
+    End Sub
+
+    Private Sub QuitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles QuitToolStripMenuItem.Click
+        StopOmniRig()
+        Me.Close()
+    End Sub
+
+    Private Sub ShowToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowToolStripMenuItem.Click
+        Me.Show()
+        Me.WindowState = FormWindowState.Normal
+        trayIcon.Visible = False
+    End Sub
+
+    Private Sub MinimizeToTrayToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MinimizeToTrayToolStripMenuItem.Click
+        My.Settings.MinimizeToTray = MinimizeToTrayToolStripMenuItem.Checked
     End Sub
 End Class

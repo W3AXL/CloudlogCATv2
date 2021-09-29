@@ -22,6 +22,8 @@ Partial Class Form1
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.lblRigFreq = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
@@ -40,8 +42,14 @@ Partial Class Form1
         Me.lblCloudlogStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.fldRigSelection = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.trayIcon = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.MinimizeToTrayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.trayMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ShowToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.QuitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
+        Me.trayMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -106,7 +114,7 @@ Partial Class Form1
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.SettingsToolStripMenuItem1, Me.AboutToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(462, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(521, 24)
         Me.MenuStrip1.TabIndex = 15
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -125,7 +133,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem1
         '
-        Me.SettingsToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CloudlogToolStripMenuItem, Me.OmnirigToolStripMenuItem, Me.TransverterOffsetToolStripMenuItem})
+        Me.SettingsToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CloudlogToolStripMenuItem, Me.OmnirigToolStripMenuItem, Me.TransverterOffsetToolStripMenuItem, Me.MinimizeToTrayToolStripMenuItem})
         Me.SettingsToolStripMenuItem1.Name = "SettingsToolStripMenuItem1"
         Me.SettingsToolStripMenuItem1.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem1.Text = "Settings"
@@ -133,19 +141,19 @@ Partial Class Form1
         'CloudlogToolStripMenuItem
         '
         Me.CloudlogToolStripMenuItem.Name = "CloudlogToolStripMenuItem"
-        Me.CloudlogToolStripMenuItem.Size = New System.Drawing.Size(166, 22)
+        Me.CloudlogToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.CloudlogToolStripMenuItem.Text = "Cloudlog"
         '
         'OmnirigToolStripMenuItem
         '
         Me.OmnirigToolStripMenuItem.Name = "OmnirigToolStripMenuItem"
-        Me.OmnirigToolStripMenuItem.Size = New System.Drawing.Size(166, 22)
+        Me.OmnirigToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.OmnirigToolStripMenuItem.Text = "Omnirig"
         '
         'TransverterOffsetToolStripMenuItem
         '
         Me.TransverterOffsetToolStripMenuItem.Name = "TransverterOffsetToolStripMenuItem"
-        Me.TransverterOffsetToolStripMenuItem.Size = New System.Drawing.Size(166, 22)
+        Me.TransverterOffsetToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.TransverterOffsetToolStripMenuItem.Text = "Transverter Offset"
         '
         'AboutToolStripMenuItem
@@ -159,7 +167,7 @@ Partial Class Form1
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCloudlogStatus})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 98)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(462, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(521, 22)
         Me.StatusStrip1.TabIndex = 16
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -172,7 +180,7 @@ Partial Class Form1
         'fldRigSelection
         '
         Me.fldRigSelection.FormattingEnabled = True
-        Me.fldRigSelection.Location = New System.Drawing.Point(309, 64)
+        Me.fldRigSelection.Location = New System.Drawing.Point(368, 64)
         Me.fldRigSelection.Name = "fldRigSelection"
         Me.fldRigSelection.Size = New System.Drawing.Size(141, 21)
         Me.fldRigSelection.TabIndex = 17
@@ -180,17 +188,48 @@ Partial Class Form1
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(306, 38)
+        Me.Label2.Location = New System.Drawing.Point(365, 38)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(70, 13)
         Me.Label2.TabIndex = 18
         Me.Label2.Text = "Rig Selection"
         '
+        'trayIcon
+        '
+        Me.trayIcon.ContextMenuStrip = Me.trayMenu
+        Me.trayIcon.Icon = CType(resources.GetObject("trayIcon.Icon"), System.Drawing.Icon)
+        Me.trayIcon.Text = "NotifyIcon1"
+        '
+        'MinimizeToTrayToolStripMenuItem
+        '
+        Me.MinimizeToTrayToolStripMenuItem.CheckOnClick = True
+        Me.MinimizeToTrayToolStripMenuItem.Name = "MinimizeToTrayToolStripMenuItem"
+        Me.MinimizeToTrayToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.MinimizeToTrayToolStripMenuItem.Text = "Minimize to Tray"
+        '
+        'trayMenu
+        '
+        Me.trayMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ShowToolStripMenuItem, Me.QuitToolStripMenuItem})
+        Me.trayMenu.Name = "trayMenu"
+        Me.trayMenu.Size = New System.Drawing.Size(104, 48)
+        '
+        'ShowToolStripMenuItem
+        '
+        Me.ShowToolStripMenuItem.Name = "ShowToolStripMenuItem"
+        Me.ShowToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ShowToolStripMenuItem.Text = "Show"
+        '
+        'QuitToolStripMenuItem
+        '
+        Me.QuitToolStripMenuItem.Name = "QuitToolStripMenuItem"
+        Me.QuitToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.QuitToolStripMenuItem.Text = "Quit"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(462, 120)
+        Me.ClientSize = New System.Drawing.Size(521, 120)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.fldRigSelection)
         Me.Controls.Add(Me.StatusStrip1)
@@ -201,6 +240,7 @@ Partial Class Form1
         Me.Controls.Add(Me.lblRigFreq)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.MenuStrip1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "Form1"
         Me.Text = "CloudlogCAT"
@@ -208,6 +248,7 @@ Partial Class Form1
         Me.MenuStrip1.PerformLayout()
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
+        Me.trayMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -231,4 +272,9 @@ Partial Class Form1
     Friend WithEvents TransverterOffsetToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents fldRigSelection As ComboBox
     Friend WithEvents Label2 As Label
+    Friend WithEvents trayIcon As NotifyIcon
+    Friend WithEvents MinimizeToTrayToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents trayMenu As ContextMenuStrip
+    Friend WithEvents ShowToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents QuitToolStripMenuItem As ToolStripMenuItem
 End Class
