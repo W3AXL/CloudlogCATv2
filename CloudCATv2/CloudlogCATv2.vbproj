@@ -29,13 +29,8 @@
     <ProductName>CloudlogCAT</ProductName>
     <PublisherName>Magicbug</PublisherName>
     <SuiteName>Cloudlog</SuiteName>
-<<<<<<< HEAD
     <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-=======
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>1.3.0.%2a</ApplicationVersion>
->>>>>>> e221a03032e5c6a6f33ade8747dc3b7de93a3a4e
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

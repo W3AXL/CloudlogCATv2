@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CloudlogCAT", "OmniRig_VB_DEMO\CloudlogCAT.vbproj", "{ADCB9205-EB9A-4E96-B32F-1590B1784786}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CloudlogCATv2", "CloudCATv2\CloudlogCATv2.vbproj", "{ADCB9205-EB9A-4E96-B32F-1590B1784786}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
